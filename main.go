@@ -4,14 +4,20 @@ import (
 	"fmt"
 	"html/template"
 	"net/http"
+
+	"github.com/olegsobchuk/go-pure/database"
 )
 
+// User struct
 type User struct {
 	Name string
 	Age  uint32
 }
 
 func main() {
+	database.Init()
+	database.Migrate()
+
 	templates := template.Must(template.ParseFiles("app/views/index.html"))
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		u := User{Name: "Oleg"}
