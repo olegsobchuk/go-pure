@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"html/template"
 	"net/http"
@@ -12,6 +13,14 @@ import (
 type User struct {
 	Name string
 	Age  uint32
+}
+
+// SearchResult struct
+type SearchResult struct {
+	Title string
+	Name  string
+	Age   uint8
+	Count uint8
 }
 
 func main() {
@@ -27,6 +36,20 @@ func main() {
 		if err := templates.ExecuteTemplate(w, "index.html", u); err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
+	})
+
+	http.HandleFunc("/search", func(w http.ResponseWriter, r *http.Request) {
+		result := []SearchResult{
+			SearchResult{"Title first", "Name First 1", 23, 2},
+			SearchResult{"Title second", "Name 2", 13, 21},
+			SearchResult{"Title last", "Name 33", 40, 2},
+		}
+
+		j, err := json.Marshal(result)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+		}
+		fmt.Fprintf(w, "%s", j)
 	})
 
 	// sessions

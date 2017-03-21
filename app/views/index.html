@@ -9,5 +9,44 @@
     <div>
       Hello, {{.Name}}!
     </div>
+    <form id="search-form" onsubmit="return false">
+      <input type="text" name="search">
+      <input id="sbmt" type="submit" value="Search">
+    </form>
+
+    <table width="100%">
+      <thead>
+        <tr style="text-align: left;">
+          <th with="40%">Title</th>
+          <th with="30%">Name</th>
+          <th with="15%">Age</th>
+          <th with="15%">Count</th>
+        </tr>
+      </thead>
+      <tbody id="search-result">
+      </tbody>
+    </table>
+    <script type="text/javascript" src="https://code.jquery.com/jquery-3.2.0.min.js"></script>
+    <script type="text/javascript">
+      $("#sbmt").click(
+        function submitBtn(){
+          $.ajax({
+            url: "/search",
+            method: "POST",
+            data: $("#search-form").serialize(),
+            success: function(rawData) {
+              var parsed = JSON.parse(rawData);
+              if (!parsed) return;
+              var sr = $("#search-result");
+              sr.empty();
+              parsed.forEach(function(result){
+                var row = $("<tr><td>"+result.Title+"</td><td>"+result.Name+"</td><td>"+result.Age+"</td><td>"+result.Count+"</td></tr>");
+                sr.append(row)
+              })
+            }
+          })
+        }
+      )
+    </script>
   </body>
 </html>
